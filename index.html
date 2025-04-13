@@ -1,60 +1,123 @@
-<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Şifreleme ve Çözme</title>
+  <title>Şifreleme Uygulaması (Türkçe Destekli)</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 20px;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom right, #e0f7fa, #a5d6a7);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
     }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 30px 20px;
+      width: 90%;
+      max-width: 440px;
+      margin-top: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: #1b5e20;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 1.3rem;
+      color: #388e3c;
+      margin-top: 30px;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+
     input, textarea {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0 20px;
-      font-size: 16px;
+      padding: 12px;
+      font-size: 1rem;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
     }
-    label {
-      font-weight: bold;
+
+    textarea {
+      resize: none;
+      height: 80px;
+    }
+
+    .footer {
+      text-align: center;
+      margin: 30px 0 10px;
+      font-style: italic;
+      color: #777;
+    }
+
+    .logo-bottom {
+      display: block;
+      margin: 30px auto 20px;
+      max-width: 140px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
   </style>
 </head>
 <body>
 
-  <h2>🔐 Mesaj Şifreleme</h2>
+  <div class="container">
+    <h1>🔐 Şifreleme Uygulaması</h1>
 
-  <label for="kelime">Sifrelenecek Kelimeyi Gir (örn: KELIME)</label>
-  <input type="text" id="kelime" oninput="sifrele()">
-  <label>Şifreli Rakamlar (örn: 196-256-...) </label>
-  <textarea id="sifreli" readonly></textarea>
+    <label for="kelime">Şifrelemek istediğiniz metni giriniz</label>
+    <input type="text" id="kelime" oninput="sifrele()">
 
-  <hr>
+    <label>Şifreli Rakamlar:</label>
+    <textarea id="sifreli" readonly></textarea>
 
-  <h2>🔓 Şifre Çözme</h2>
+    <h2>🔓 Şifre Çözme</h2>
 
-  <label for="sifreliText">Şifreli Rakamları Gir (örn: 196-256-2025)</label>
-  <input type="text" id="sifreliText" oninput="coz()">
-  <label>Çözülen Kelime:</label>
-  <textarea id="cozulmus" readonly></textarea>
+    <label for="sifreliText">Şifreli Rakamları Giriniz</label>
+    <input type="text" id="sifreliText" oninput="coz()">
 
-  <p style="text-align:center; font-style: italic; margin-top: 40px;">Design by Havin Güreli 9E</p>
+    <label>Çözülmüş Metin:</label>
+    <textarea id="cozulmus" readonly></textarea>
+
+    <p class="footer">Design by Havin Güreli 9E</p>
+    <img src="https://aycal.meb.k12.tr/meb_iys_dosyalar/34/34/970222/resimler/2024_11/24223444_logo.jpg" class="logo-bottom" alt="Logo">
+  </div>
 
   <script>
+    const turkceAlfabe = ["A","B","C","Ç","D","E","F","G","Ğ","H","I","İ","J","K","L","M","N","O","Ö","P","R","S","Ş","T","U","Ü","V","Y","Z"];
+
     function sifrele() {
       const kelime = document.getElementById("kelime").value.toUpperCase();
       let sonuc = [];
 
       for (let i = 0; i < kelime.length; i++) {
         const harf = kelime[i];
-        const kod = harf.charCodeAt(0);
+        const pozisyon = i + 1;
 
-        if (kod >= 65 && kod <= 90) {
-          const sira = kod - 64; // A=1
-          const pozisyon = i + 1;
-          const sifreli = Math.pow((sira + 3) * pozisyon, 2);
-          sonuc.push(sifreli);
+        if (harf === " ") {
+          sonuc.push(9999);
+        } else {
+          const sira = turkceAlfabe.indexOf(harf);
+          if (sira !== -1) {
+            const sifreli = Math.pow((sira + 1 + 3) * pozisyon, 2);
+            sonuc.push(sifreli);
+          }
         }
       }
 
@@ -70,10 +133,12 @@
         const sayi = parseInt(sayilar[i]);
         const pozisyon = i + 1;
 
-        if (!isNaN(sayi)) {
+        if (sayi === 9999) {
+          sonuc += " ";
+        } else if (!isNaN(sayi)) {
           const kok = Math.sqrt(sayi);
-          const sira = Math.round(kok / pozisyon - 3);
-          const harf = String.fromCharCode(sira + 64);
+          const sira = Math.round(kok / pozisyon - 3) - 1;
+          const harf = turkceAlfabe[sira] || "?";
           sonuc += harf;
         }
       }
