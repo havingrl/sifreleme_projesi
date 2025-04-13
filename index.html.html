@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Şifreleme ve Çözme</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px;
+      font-size: 16px;
+    }
+    label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔐 Mesaj Şifreleme</h2>
+
+  <label for="kelime">Kelime Gir (örn: KELIME)</label>
+  <input type="text" id="kelime" oninput="sifrele()">
+  <label>Şifreli Rakamlar (örnek: 196-64...)</label>
+  <textarea id="sifreli" readonly></textarea>
+
+  <hr>
+
+  <h2>🔓 Şifre Çözme</h2>
+
+  <label for="sifreliText">Şifreli Rakamları Gir (örn: 196-64-225-144-256-64)</label>
+  <input type="text" id="sifreliText" oninput="coz()">
+  <label>Çözülen Kelime:</label>
+  <textarea id="cozulmus" readonly></textarea>
+
+  <script>
+    function sifrele() {
+      const kelime = document.getElementById("kelime").value.toUpperCase();
+      let sonuc = [];
+
+      for (let i = 0; i < kelime.length; i++) {
+        const harf = kelime[i];
+        const kod = harf.charCodeAt(0);
+
+        // A-Z arasıysa işle
+        if (kod >= 65 && kod <= 90) {
+          const sira = kod - 64; // A=1
+          const sifreli = Math.pow(sira + 3, 2);
+          sonuc.push(sifreli);
+        }
+      }
+
+      document.getElementById("sifreli").value = sonuc.join("-");
+    }
+
+    function coz() {
+      const giris = document.getElementById("sifreliText").value;
+      const sayilar = giris.split("-");
+      let sonuc = "";
+
+      for (let i = 0; i < sayilar.length; i++) {
+        const sayi = parseInt(sayilar[i]);
+        if (!isNaN(sayi)) {
+          const kok = Math.sqrt(sayi);
+          const sira = Math.round(kok - 3);
+          const harf = String.fromCharCode(sira + 64);
+          sonuc += harf;
+        }
+      }
+
+      document.getElementById("cozulmus").value = sonuc;
+    }
+  </script>
+
+
+  <p style="text-align:center; font-style: italic; margin-top: 40px;">Design by Havin Güreli 9E</p>
+</body>
+</html>
