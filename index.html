@@ -27,17 +27,19 @@
 
   <label for="kelime">Kelime Gir (örn: KELIME)</label>
   <input type="text" id="kelime" oninput="sifrele()">
-  <label>Şifreli Rakamlar (örnek: 196-64...)</label>
+  <label>Şifreli Rakamlar (örn: 196-256-...) </label>
   <textarea id="sifreli" readonly></textarea>
 
   <hr>
 
   <h2>🔓 Şifre Çözme</h2>
 
-  <label for="sifreliText">Şifreli Rakamları Gir (örn: 196-64-225-144-256-64)</label>
+  <label for="sifreliText">Şifreli Rakamları Gir (örn: 196-256-2025)</label>
   <input type="text" id="sifreliText" oninput="coz()">
   <label>Çözülen Kelime:</label>
   <textarea id="cozulmus" readonly></textarea>
+
+  <p style="text-align:center; font-style: italic; margin-top: 40px;">Design by Havin Güreli 9E</p>
 
   <script>
     function sifrele() {
@@ -48,10 +50,10 @@
         const harf = kelime[i];
         const kod = harf.charCodeAt(0);
 
-        // A-Z arasıysa işle
         if (kod >= 65 && kod <= 90) {
           const sira = kod - 64; // A=1
-          const sifreli = Math.pow(sira + 3, 2);
+          const pozisyon = i + 1;
+          const sifreli = Math.pow((sira + 3) * pozisyon, 2);
           sonuc.push(sifreli);
         }
       }
@@ -66,9 +68,11 @@
 
       for (let i = 0; i < sayilar.length; i++) {
         const sayi = parseInt(sayilar[i]);
+        const pozisyon = i + 1;
+
         if (!isNaN(sayi)) {
           const kok = Math.sqrt(sayi);
-          const sira = Math.round(kok - 3);
+          const sira = Math.round(kok / pozisyon - 3);
           const harf = String.fromCharCode(sira + 64);
           sonuc += harf;
         }
@@ -77,8 +81,6 @@
       document.getElementById("cozulmus").value = sonuc;
     }
   </script>
-
-
   <p style="text-align:center; font-style: italic; margin-top: 40px;">Design by Havin Güreli 9E</p>
 </body>
 </html>
